@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Numerics;
 
 namespace SpellTheNumber
 {
@@ -8,27 +7,26 @@ namespace SpellTheNumber
         public string ConvertNumericToWordFormat(long numericFormat, int length)
         {
             string wordFormat = "";
-            if(numericFormat >= 0 && numericFormat <= 20)
+            long valueForDivAndMod = GetValueForDivAndMod(length);
+            long remainder = numericFormat % valueForDivAndMod;
+            long division = numericFormat / valueForDivAndMod;
+            int remainderLength = remainder.ToString().Length;
+            int divisionLength = division.ToString().Length;
+            if (numericFormat >= 0 && numericFormat <= 20)
             {
                 wordFormat = GetUniqueNamesForNumbers(numericFormat);
             }
             else if(numericFormat >= 21 && numericFormat <= 99)
             {
-                long remainder = numericFormat % 10;
-                long division = numericFormat / 10;
-                wordFormat = String.Format("{0}{1}", GetUniqueNamesForNumbers(division * 10), remainder != 0 ? " " + GetUniqueNamesForNumbers(remainder) : "");
+                wordFormat = String.Format("{0}{1}", GetUniqueNamesForNumbers(division * valueForDivAndMod), remainder != 0 ? " " + GetUniqueNamesForNumbers(remainder) : "");
             }
-            else if (numericFormat >= 100 && numericFormat <= 999)
+            else if (division >= 1 && division <= 9)
             {
-                long remainder = numericFormat % 100;
-                long division = numericFormat / 100;
-                return String.Format("{0} {1}{2}", GetUniqueNamesForNumbers(division), GetUniqueNamesForNumbers(100), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, 3) : "");
+                return String.Format("{0} {1}{2}", GetUniqueNamesForNumbers(division), GetUniqueNamesForNumbers(valueForDivAndMod), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, remainderLength) : "");
             }
-            else if (numericFormat >= 1000 && numericFormat <= 9999)
+            else if (division >= 10)
             {
-                long remainder = numericFormat % 1000;
-                long division = numericFormat / 1000;
-                return String.Format("{0} {1}{2}", GetUniqueNamesForNumbers(division), GetUniqueNamesForNumbers(1000), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, 4) : "");
+                return String.Format("{0} {1}{2}", ConvertNumericToWordFormat(division, divisionLength), GetUniqueNamesForNumbers(valueForDivAndMod), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, remainderLength) : "");
             }
             return wordFormat;
         }
@@ -105,6 +103,31 @@ namespace SpellTheNumber
                     return "Arab";
             }
             return "";
+        }
+        private long GetValueForDivAndMod(int length)
+        {
+            switch (length)
+            {
+                case 2:
+                    return 10;
+                case 3:
+                    return 100;
+                case 4:
+                case 5:
+                    return 1000;
+                case 6:
+                case 7:
+                    return 100000;
+                case 8:
+                case 9:
+                    return 10000000;
+                case 10:
+                case 11:
+                    return 1000000000;
+                default:
+                    return 10000000;
+            }
+            return 0;
         }
     }
 }
