@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 
 namespace SpellTheNumber
 {
@@ -6,11 +7,30 @@ namespace SpellTheNumber
     {
         public string ConvertNumericToWordFormat(long numericFormat, int length)
         {
+            string wordFormat = "";
             if(numericFormat >= 0 && numericFormat <= 20)
             {
-                return GetUniqueNamesForNumbers(numericFormat);
+                wordFormat = GetUniqueNamesForNumbers(numericFormat);
             }
-            return "Word Format";
+            else if(numericFormat >= 21 && numericFormat <= 99)
+            {
+                long remainder = numericFormat % 10;
+                long division = numericFormat / 10;
+                wordFormat = String.Format("{0}{1}", GetUniqueNamesForNumbers(division * 10), remainder != 0 ? " " + GetUniqueNamesForNumbers(remainder) : "");
+            }
+            else if (numericFormat >= 100 && numericFormat <= 999)
+            {
+                long remainder = numericFormat % 100;
+                long division = numericFormat / 100;
+                return String.Format("{0} {1}{2}", GetUniqueNamesForNumbers(division), GetUniqueNamesForNumbers(100), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, 3) : "");
+            }
+            else if (numericFormat >= 1000 && numericFormat <= 9999)
+            {
+                long remainder = numericFormat % 1000;
+                long division = numericFormat / 1000;
+                return String.Format("{0} {1}{2}", GetUniqueNamesForNumbers(division), GetUniqueNamesForNumbers(1000), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, 4) : "");
+            }
+            return wordFormat;
         }
 
         private string GetUniqueNamesForNumbers(long number)
