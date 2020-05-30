@@ -7,30 +7,44 @@ namespace SpellTheNumber
         public string ConvertNumericToWordFormat(long numericFormat, int length)
         {
             string wordFormat = "";
-            long valueForDivAndMod = GetValueForDivAndMod(length);
-            long remainder = numericFormat % valueForDivAndMod;
-            long division = numericFormat / valueForDivAndMod;
-            int remainderLength = remainder.ToString().Length;
-            int divisionLength = division.ToString().Length;
+            //If number is between 0 to 20, Get the word format directly from switch case
             if (numericFormat >= 0 && numericFormat <= 20)
             {
                 wordFormat = GetUniqueNamesForNumbers(numericFormat);
             }
-            else if(numericFormat >= 21 && numericFormat <= 99)
+            else
             {
-                wordFormat = String.Format("{0}{1}", GetUniqueNamesForNumbers(division * valueForDivAndMod), remainder != 0 ? " " + GetUniqueNamesForNumbers(remainder) : "");
-            }
-            else if (division >= 1 && division <= 9)
-            {
-                return String.Format("{0} {1}{2}", GetUniqueNamesForNumbers(division), GetUniqueNamesForNumbers(valueForDivAndMod), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, remainderLength) : "");
-            }
-            else if (division >= 10)
-            {
-                return String.Format("{0} {1}{2}", ConvertNumericToWordFormat(division, divisionLength), GetUniqueNamesForNumbers(valueForDivAndMod), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, remainderLength) : "");
+                //Retrieve the number to use for calculating remainder and division
+                long valueForDivAndMod = GetValueForDivAndMod(length);
+                //Calculate remainder and its length for future use
+                long remainder = numericFormat % valueForDivAndMod;
+                int remainderLength = remainder.ToString().Length;
+                //Calculate division and its length for future use
+                long division = numericFormat / valueForDivAndMod;
+                int divisionLength = division.ToString().Length;
+                //For Numbers 21 to 99, special if condition (Can try to remove this and combine with below to if condition)
+                if (numericFormat >= 21 && numericFormat <= 99)
+                {
+                    wordFormat = String.Format("{0}{1}", GetUniqueNamesForNumbers(division * valueForDivAndMod), remainder != 0 ? " " + GetUniqueNamesForNumbers(remainder) : "");
+                }
+                //If the division is between 1 to 9, then this case will be used (i.e. for 1000, 5999, 1,00,000 etc.)
+                else if (division >= 1 && division <= 9)
+                {
+                    return String.Format("{0} {1}{2}", GetUniqueNamesForNumbers(division), GetUniqueNamesForNumbers(valueForDivAndMod), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, remainderLength) : "");
+                }
+                //If the division is greater than 10, then this case will be used (i.e. for 10000, 59999, 10,00,000 etc.)
+                else if (division >= 10)
+                {
+                    return String.Format("{0} {1}{2}", ConvertNumericToWordFormat(division, divisionLength), GetUniqueNamesForNumbers(valueForDivAndMod), remainder != 0 ? " " + ConvertNumericToWordFormat(remainder, remainderLength) : "");
+                }
             }
             return wordFormat;
         }
-
+        /// <summary>
+        /// This functions is used to get the unique word representation for each values
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
         private string GetUniqueNamesForNumbers(long number)
         {
             switch (number)
@@ -104,6 +118,11 @@ namespace SpellTheNumber
             }
             return "";
         }
+        /// <summary>
+        /// This functions returns the number with which division number and remainder number needs to be calculated
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
         private long GetValueForDivAndMod(int length)
         {
             switch (length)

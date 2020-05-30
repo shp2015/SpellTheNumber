@@ -16,7 +16,12 @@ namespace SpellTheNumber
                 {
                     Convert c = new Convert();
                     Console.WriteLine("Here is the Word Format :- ");
+                    //Get word representation and write it
                     Console.WriteLine(c.ConvertNumericToWordFormat(number, numberToRead.Length));
+                }
+                else
+                {
+                    Console.WriteLine("Please enter valid Numeric Value, Try again.");
                 }
             }
         }
